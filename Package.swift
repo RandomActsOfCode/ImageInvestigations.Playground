@@ -34,7 +34,9 @@ let package = Package(
         ),
         .target(
             name: "MediaAssets",
-            dependencies: [],
+            dependencies: [
+                "ViewHelpers"
+            ],
             path: "Sources/MediaAssets",
             resources: [
                 .process("Resources")
