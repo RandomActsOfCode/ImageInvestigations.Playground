@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct MainView: View {
+    @ObservedObject private var viewModel = MainViewModel()
+
     public init() {}
 
     public var body: some View {
