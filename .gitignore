@@ -1,0 +1,7 @@
+### gitignore
+Packages
+.build/
+xcuserdata
+DerivedData/
+
+
