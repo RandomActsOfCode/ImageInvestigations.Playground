@@ -1,8 +1,15 @@
 import Foundation
 import MediaAssets
+import UIKit
+import ViewHelpers
 
 class MainViewModel: ObservableObject {
+    @Published var showImagePicker: Bool
+    @Published var selectedMedia: PickedMediaItems
+
     init() {
+        self.showDocumentPicker = false
+        self.selectedMedia = PickedMediaItems()
         copyAssetsToDocuments()
     }
 
@@ -12,6 +19,10 @@ class MainViewModel: ObservableObject {
 
     var documentsUrl: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+
+    func pickImages() {
+        showImagePicker = true
     }
 
     private func copyAssetsToDocuments() {
@@ -28,13 +39,5 @@ class MainViewModel: ObservableObject {
                 print("Error copy asset to Documents: \(error.localizedDescription)")
             }
         }
-    }
-}
-
-extension URL {
-    var filename: String {
-        let ext = self.lastPathComponent
-        let name = self.deletingLastPathComponent().lastPathComponent
-        return "\(name).\(ext)"
     }
 }

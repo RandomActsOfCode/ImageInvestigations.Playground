@@ -6,7 +6,17 @@ public struct MainView: View {
     public init() {}
 
     public var body: some View {
-        Text("Main View")
+        NavigationView {
+            List {
+                NavigationLink(destination: photoPickerView) {
+                    Text("Image Picker (External)")
+                }
+            }
+        }
+    }
+
+    private var photoPickerView: some View {
+        ImagePickerView(viewModel)
     }
 }
 
