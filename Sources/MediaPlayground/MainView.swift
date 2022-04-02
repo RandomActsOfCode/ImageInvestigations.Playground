@@ -1,4 +1,5 @@
 import SwiftUI
+import ViewHelpers
 
 public struct MainView: View {
     @ObservedObject private var viewModel = MainViewModel()
@@ -11,12 +12,19 @@ public struct MainView: View {
                 NavigationLink(destination: photoPickerView) {
                     Text("Image Picker (External)")
                 }
+                NavigationLink(destination: documentPickerView) {
+                    Text("Document Picker (External)")
+                }
             }
         }
     }
 
     private var photoPickerView: some View {
         ImagePickerView(viewModel)
+    }
+
+    private var documentPickerView: some View {
+        DocumentPickerView(viewModel)
     }
 }
 

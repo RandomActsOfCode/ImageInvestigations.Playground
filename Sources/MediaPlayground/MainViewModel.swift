@@ -5,11 +5,15 @@ import ViewHelpers
 
 class MainViewModel: ObservableObject {
     @Published var showImagePicker: Bool
+    @Published var showDocumentPicker: Bool
     @Published var selectedMedia: PickedMediaItems
+    @Published var selectedDocuments: PickedDocumentsItems
 
     init() {
+        self.showImagePicker = false
         self.showDocumentPicker = false
         self.selectedMedia = PickedMediaItems()
+        self.selectedDocuments = PickedDocumentsItems()
         copyAssetsToDocuments()
     }
 
@@ -23,6 +27,10 @@ class MainViewModel: ObservableObject {
 
     func pickImages() {
         showImagePicker = true
+    }
+
+    func pickDocuments() {
+        showDocumentPicker = true
     }
 
     private func copyAssetsToDocuments() {
