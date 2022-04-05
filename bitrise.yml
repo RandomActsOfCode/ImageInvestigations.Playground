@@ -1,0 +1,73 @@
+---
+format_version: '11'
+default_step_lib_source: 'https://github.com/bitrise-io/bitrise-steplib.git'
+project_type: ios
+workflows:
+  primary:
+    description: |
+      The workflow build and tests
+    steps:
+    - activate-ssh-key@4: {}
+    - git-clone@6: {}
+    - brew-install@0:
+        inputs:
+        - packages: pre-commit
+    - brew-install@0:
+        inputs:
+        - packages: cargo-c
+    - cache-pull@2: {}
+    - script@1:
+        inputs:
+        - content: |-
+            #!/usr/bin/env zsh
+            # fail if any commands fails
+            set -e
+            # debug log
+            set -x
+
+            curl https://sh.rustup.rs -sSf | sh -s -- -y
+    - cache-pull@2: {}
+    - script@1:
+        inputs:
+        - runner_bin: /bin/zsh
+        - content: |-
+            #!/usr/bin/env zsh
+            # fail if any commands fails
+            set -e
+            # debug log
+            set -x
+
+            if which pre-commit >/dev/null; then
+              pre-commit run --all-files --color=never
+            else
+              echo "You must install pre-commit to run code checks"
+              exit 1
+            fi
+    - xcode-build-for-test@1:
+        inputs:
+        - project_path: $BITRISE_PROJECT_PATH
+        - scheme: $BITRISE_SCHEME
+        - destination: 'platform=iOS Simulator,name=iPhone 8 Plus,OS=latest'
+    - xcode-test@4: {}
+    - cache-push@2:
+        inputs:
+        - cache_paths: $HOME/.cache/pre-commit
+    - deploy-to-bitrise-io@2: {}
+meta:
+  bitrise.io:
+    stack: osx-xcode-13.3.x
+    machine_type_id: g2.4core
+app:
+  envs:
+  - opts:
+      is_expand: false
+    BITRISE_PROJECT_PATH: SampleApp/SampleApp.xcodeproj
+  - opts:
+      is_expand: false
+    BITRISE_SCHEME: SampleApp
+  - opts:
+      is_expand: false
+    BITRISE_DISTRIBUTION_METHOD: ad-hoc
+trigger_map:
+- push_branch: main
+  workflow: primary
