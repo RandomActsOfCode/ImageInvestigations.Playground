@@ -6,12 +6,55 @@
 	objectVersion = 55;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		28BC0DF127FDAE42002BE755 /* CodeChecks */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 28BC0DF227FDAE42002BE755 /* Build configuration list for PBXAggregateTarget "CodeChecks" */;
+			buildPhases = (
+				28BC0DF527FDAE47002BE755 /* pre-commit */,
+			);
+			dependencies = (
+			);
+			name = CodeChecks;
+			productName = CodeChecks;
+		};
+		28C990C527FDC30700C235BB /* CodeChecks and Build */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 28C990C827FDC30700C235BB /* Build configuration list for PBXAggregateTarget "CodeChecks and Build" */;
+			buildPhases = (
+			);
+			dependencies = (
+				28C990CC27FDC31D00C235BB /* PBXTargetDependency */,
+				28C990CA27FDC30E00C235BB /* PBXTargetDependency */,
+			);
+			name = "CodeChecks and Build";
+			productName = "CodeChecks and Build";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		28BC0DEC27F74612002BE755 /* MediaPlayground in Frameworks */ = {isa = PBXBuildFile; productRef = 28BC0DEB27F74612002BE755 /* MediaPlayground */; };
 		28CFE84327F73EE400A3384E /* SampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CFE84227F73EE400A3384E /* SampleApp.swift */; };
 		28CFE84727F73EE600A3384E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28CFE84627F73EE600A3384E /* Assets.xcassets */; };
 		28CFE84A27F73EE600A3384E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28CFE84927F73EE600A3384E /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		28C990C927FDC30E00C235BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28CFE83727F73EE400A3384E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28BC0DF127FDAE42002BE755;
+			remoteInfo = CodeChecks;
+		};
+		28C990CB27FDC31D00C235BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28CFE83727F73EE400A3384E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28CFE83E27F73EE400A3384E;
+			remoteInfo = SampleApp;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		28CFE83F27F73EE400A3384E /* SampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -109,6 +152,12 @@
 				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1330;
 				TargetAttributes = {
+					28BC0DF127FDAE42002BE755 = {
+						CreatedOnToolsVersion = 13.3;
+					};
+					28C990C527FDC30700C235BB = {
+						CreatedOnToolsVersion = 13.3;
+					};
 					28CFE83E27F73EE400A3384E = {
 						CreatedOnToolsVersion = 13.3;
 					};
@@ -128,6 +177,8 @@
 			projectRoot = "";
 			targets = (
 				28CFE83E27F73EE400A3384E /* SampleApp */,
+				28BC0DF127FDAE42002BE755 /* CodeChecks */,
+				28C990C527FDC30700C235BB /* CodeChecks and Build */,
 			);
 		};
 /* End PBXProject section */
@@ -144,6 +195,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		28BC0DF527FDAE47002BE755 /* pre-commit */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "pre-commit";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/zsh;
+			shellScript = "if which pre-commit >/dev/null; then\n  pre-commit run --all-files --color=never\nelse\n  echo \"You must install pre-commit to run code checks\"\n  exit 1\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		28CFE83B27F73EE400A3384E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -155,7 +227,56 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		28C990CA27FDC30E00C235BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28BC0DF127FDAE42002BE755 /* CodeChecks */;
+			targetProxy = 28C990C927FDC30E00C235BB /* PBXContainerItemProxy */;
+		};
+		28C990CC27FDC31D00C235BB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28CFE83E27F73EE400A3384E /* SampleApp */;
+			targetProxy = 28C990CB27FDC31D00C235BB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		28BC0DF327FDAE42002BE755 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = K37L2NP69C;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		28BC0DF427FDAE42002BE755 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = K37L2NP69C;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		28C990C627FDC30700C235BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = K37L2NP69C;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		28C990C727FDC30700C235BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = K37L2NP69C;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		28CFE84B27F73EE600A3384E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -331,6 +452,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		28BC0DF227FDAE42002BE755 /* Build configuration list for PBXAggregateTarget "CodeChecks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28BC0DF327FDAE42002BE755 /* Debug */,
+				28BC0DF427FDAE42002BE755 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28C990C827FDC30700C235BB /* Build configuration list for PBXAggregateTarget "CodeChecks and Build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28C990C627FDC30700C235BB /* Debug */,
+				28C990C727FDC30700C235BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		28CFE83A27F73EE400A3384E /* Build configuration list for PBXProject "SampleApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
