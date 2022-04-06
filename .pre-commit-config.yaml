@@ -8,3 +8,10 @@ repos:
     -   id: check-case-conflict
     -   id: check-merge-conflict
     -   id: forbid-new-submodules
+-   repo: https://github.com/realm/SwiftLint/
+    rev: 0.47.0
+    hooks:
+    -   id: swiftlint
+        args: ["--fix"]
+    -   id: swiftlint
+        args: ["--strict"]

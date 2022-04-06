@@ -1,0 +1,127 @@
+swiftlint_version: "0.47.0"
+excluded:
+  - ".build"
+# Options
+attributes:
+    always_on_same_line:
+        - "@objc"
+        - "@IBAction"
+        - "@NSManaged"
+identifier_name:
+    excluded:
+        - "i"
+        - "id"
+    min_length:
+        warning: 3
+        error: 0
+    max_length: 1000
+    validates_start_with_lowercase: true
+line_length: 160
+nesting:
+    type_level: 3
+trailing_closure:
+    only_single_muted_parameter: true
+type_name:
+    min_length: 3
+    max_length: 1000
+
+reporter: "xcode"
+
+# Opt In Rules
+opt_in_rules:
+    - anyobject_protocol
+    - array_init
+    - attributes
+    - closure_end_indentation
+    - closure_spacing
+    - collection_alignment
+    - contains_over_filter_count
+    - contains_over_filter_is_empty
+    - contains_over_first_not_nil
+    - contains_over_range_nil_comparison
+    - discouraged_object_literal
+    - discouraged_optional_boolean
+    - empty_collection_literal
+    - empty_count
+    - empty_string
+    - empty_xctest_method
+    - enum_case_associated_values_count
+    - expiring_todo
+    - explicit_init
+    - no_extension_access_modifier
+    - fallthrough
+    - fatal_error_message
+    - file_name_no_space
+    - first_where
+    - flatmap_over_map_reduce
+    - force_unwrapping
+    - ibinspectable_in_extension
+    - identical_operands
+    - implicit_return
+    - joined_default_parameter
+    - last_where
+    - legacy_multiple
+    - legacy_random
+    - literal_expression_end_indentation
+    - lower_acl_than_parent
+    - missing_docs
+    - modifier_order
+    - multiline_arguments
+    - multiline_literal_brackets
+    - multiline_parameters
+    - multiline_parameters_brackets
+    - nimble_operator
+    - nslocalizedstring_key
+    - nslocalizedstring_require_bundle
+    - object_literal
+    - operator_usage_whitespace
+    - optional_enum_case_matching
+    - overridden_super_call
+    - override_in_extension
+    - pattern_matching_keywords
+    - prefer_self_type_over_type_of_self
+    - prefer_zero_over_explicit_init
+    - prefixed_toplevel_constant
+    - private_action
+    - private_outlet
+    - prohibited_super_call
+    - raw_value_for_camel_cased_codable_enum
+    - redundant_nil_coalescing
+    - redundant_type_annotation
+    - single_test_class
+    - sorted_first_last
+    - static_operator
+    - switch_case_on_newline
+    - toggle_bool
+    - trailing_closure
+    - unneeded_parentheses_in_closure_argument
+    - unowned_variable_capture
+    - untyped_error_in_catch
+    - unused_declaration
+    - vertical_parameter_alignment_on_call
+    - vertical_whitespace_closing_braces
+    - vertical_whitespace_opening_braces
+    - yoda_condition
+
+# Custom Rules
+custom_rules:
+    unwrapping_weak_self:
+        regex: "(let|var) (((?!self)[\\w\\d]+|self[\\w\\d]+)(\\: [\\w\\d]+)? = self)(?![.\\w\\d])"
+        capture_group: 2
+        match_kinds:
+            - identifier
+            - keyword
+        name: "Unwrapping Weak Self"
+        message: "`self` should not be renamed when unwrapping a weak reference to it. Use `guard let self = self else { return }`"
+        severity: warning
+
+# Disabled Rules
+disabled_rules:
+    - todo
+    - multiple_closures_with_trailing_closure
+    - prefixed_toplevel_constant
+    - empty_parentheses_with_trailing_closure
+    - comment_spacing
+    - missing_docs
+    - trailing_comma
+    - void_return
