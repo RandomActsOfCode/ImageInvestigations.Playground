@@ -1,34 +1,40 @@
+import AVKit
 import Foundation
 import SwiftUI
 import ViewHelpers
-import AVKit
 
 struct DocumentPickerView: View {
-    @ObservedObject var viewModel: MainViewModel
-    @ObservedObject var foo: PickedDocumentsItems
+  // MARK: Lifecycle
 
-    init(_ viewModel: MainViewModel) {
-        self.viewModel = viewModel
-        self.foo = viewModel.selectedDocuments
-    }
+  init(_ viewModel: MainViewModel) {
+    self.viewModel = viewModel
+    self.foo = viewModel.selectedDocuments
+  }
 
-    var body: some View {
-        VStack {
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(foo.items) { item in
-                        SwiftUIPDFView(item.url!) //swiftlint:disable:this force_unwrapping
-                            .frame(width: 300)
-                    }
-                }
-            }
+  // MARK: Internal
 
-            Button(action: { viewModel.pickDocuments() }) {
-                Text("Pick Documents")
-            }
+  @ObservedObject
+  var viewModel: MainViewModel
+  @ObservedObject
+  var foo: PickedDocumentsItems
+
+  var body: some View {
+    VStack {
+      ScrollView(.horizontal) {
+        LazyHStack {
+          ForEach(foo.items) { item in
+            SwiftUIPDFView(item.url!) // swiftlint:disable:this force_unwrapping
+              .frame(width: 300)
+          }
         }
-        .sheet(isPresented: $viewModel.showDocumentPicker) {
-            SwiftUIDocumentPickerViewController($viewModel.selectedDocuments)
-        }
+      }
+
+      Button(action: { viewModel.pickDocuments() }) {
+        Text("Pick Documents")
+      }
     }
+    .sheet(isPresented: $viewModel.showDocumentPicker) {
+      SwiftUIDocumentPickerViewController($viewModel.selectedDocuments)
+    }
+  }
 }

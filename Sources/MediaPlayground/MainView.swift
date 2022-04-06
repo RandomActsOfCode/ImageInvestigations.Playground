@@ -1,35 +1,46 @@
 import SwiftUI
 import ViewHelpers
 
+// MARK: - MainView
+
 public struct MainView: View {
-    @ObservedObject private var viewModel = MainViewModel()
+  // MARK: Lifecycle
 
-    public init() {}
+  public init() {}
 
-    public var body: some View {
-        NavigationView {
-            List {
-                NavigationLink(destination: photoPickerView) {
-                    Text("Image Picker (External)")
-                }
-                NavigationLink(destination: documentPickerView) {
-                    Text("Document Picker (External)")
-                }
-            }
+  // MARK: Public
+
+  public var body: some View {
+    NavigationView {
+      List {
+        NavigationLink(destination: photoPickerView) {
+          Text("Image Picker (External)")
         }
+        NavigationLink(destination: documentPickerView) {
+          Text("Document Picker (External)")
+        }
+      }
     }
+  }
 
-    private var photoPickerView: some View {
-        ImagePickerView(viewModel)
-    }
+  // MARK: Private
 
-    private var documentPickerView: some View {
-        DocumentPickerView(viewModel)
-    }
+  @ObservedObject
+  private var viewModel = MainViewModel()
+
+  private var photoPickerView: some View {
+    ImagePickerView(viewModel)
+  }
+
+  private var documentPickerView: some View {
+    DocumentPickerView(viewModel)
+  }
 }
 
+// MARK: - MainView_Previews
+
 struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
-    }
+  static var previews: some View {
+    MainView()
+  }
 }

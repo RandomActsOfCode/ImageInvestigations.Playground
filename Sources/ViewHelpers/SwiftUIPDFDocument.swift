@@ -1,23 +1,27 @@
 import Foundation
-import SwiftUI
 import PDFKit
+import SwiftUI
 
 public struct SwiftUIPDFView: UIViewRepresentable {
-    public var url: URL
+  // MARK: Lifecycle
 
-    public init(_ url: URL) {
-        self.url = url
-    }
+  public init(_ url: URL) {
+    self.url = url
+  }
 
-    public func makeUIView(context: Context) -> PDFView {
-        let pdfView = PDFView()
-        pdfView.document = PDFDocument(url: url)
-        pdfView.displayMode = .singlePage
-        pdfView.autoScales = true
-        return pdfView
-    }
+  // MARK: Public
 
-    public func updateUIView(_ uiView: PDFView, context: Context) {
-        uiView.document = PDFDocument(url: url)
-    }
+  public var url: URL
+
+  public func makeUIView(context: Context) -> PDFView {
+    let pdfView = PDFView()
+    pdfView.document = PDFDocument(url: url)
+    pdfView.displayMode = .singlePage
+    pdfView.autoScales = true
+    return pdfView
+  }
+
+  public func updateUIView(_ uiView: PDFView, context: Context) {
+    uiView.document = PDFDocument(url: url)
+  }
 }

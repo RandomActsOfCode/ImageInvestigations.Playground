@@ -3,124 +3,167 @@ import QuickLook
 import SwiftUI
 import UIKit
 
+// MARK: - SwiftUIDocumentPickerViewController
+
 public struct SwiftUIDocumentPickerViewController: UIViewControllerRepresentable {
-    var documentItems: Binding<PickedDocumentsItems>
-    var didFinishPicking: ((_ didSelectItems: Bool) -> Void)?
+  // MARK: Lifecycle
 
-    // MARK: - UIDocumentPickerDelegate
+  // MARK: - init
 
-    public class Coordinator: NSObject, UIDocumentPickerDelegate {
-        let parent: SwiftUIDocumentPickerViewController
+  public init(
+    _ documentItems: Binding<PickedDocumentsItems>,
+    didFinishPicking: ((Bool) -> ())? = nil
+  ) {
+    self.documentItems = documentItems
+    self.didFinishPicking = didFinishPicking
+  }
 
-        init(_ parent: SwiftUIDocumentPickerViewController) {
-            self.parent = parent
+  // MARK: Public
+
+  // MARK: - UIDocumentPickerDelegate
+
+  public class Coordinator: NSObject, UIDocumentPickerDelegate {
+    // MARK: Lifecycle
+
+    init(_ parent: SwiftUIDocumentPickerViewController) {
+      self.parent = parent
+    }
+
+    // MARK: Public
+
+    public func documentPicker(
+      _ controller: UIDocumentPickerViewController,
+      didPickDocumentsAt urls: [URL]
+    ) {
+      let dest = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+      var results: [URL] = []
+
+      urls.forEach { url in
+        guard url.startAccessingSecurityScopedResource() else {
+          print("can't access")
+          return
         }
 
-        public func documentPicker(
-            _ controller: UIDocumentPickerViewController,
-            didPickDocumentsAt urls: [URL]
-        ) {
-            let dest = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            var results: [URL] = []
+        var error: NSError?
+        NSFileCoordinator().coordinate(readingItemAt: url, error: &error) { url in
+          let destFile = dest.appendingPathComponent(url.lastPathComponent)
 
-            urls.forEach { url in
-                guard url.startAccessingSecurityScopedResource() else {
-                    print("can't access")
-                    return
-                }
-
-                var error: NSError?
-                NSFileCoordinator().coordinate(readingItemAt: url, error: &error) { url in
-                    let destFile = dest.appendingPathComponent(url.lastPathComponent)
-
-                    do {
-                        if FileManager.default.fileExists(atPath: destFile.path) {
-                            try FileManager.default.removeItem(at: destFile)
-                        }
-
-                        try FileManager.default.copyItem(at: url, to: destFile)
-                        results.append(destFile)
-                        url.stopAccessingSecurityScopedResource()
-                    } catch {
-                        print("Error copying over secure URL to Documents")
-                    }
-                }
+          do {
+            if FileManager.default.fileExists(atPath: destFile.path) {
+              try FileManager.default.removeItem(at: destFile)
             }
 
-            DispatchQueue.main.async {
-                results.forEach {
-                    self.parent.documentItems.wrappedValue.append(item: .init(with: $0))
-                }
-            }
+            try FileManager.default.copyItem(at: url, to: destFile)
+            results.append(destFile)
+            url.stopAccessingSecurityScopedResource()
+          } catch {
+            print("Error copying over secure URL to Documents")
+          }
         }
+      }
+
+      DispatchQueue.main.async {
+        results.forEach {
+          self.parent.documentItems.wrappedValue.append(item: .init(with: $0))
+        }
+      }
     }
 
-    // MARK: - init
+    // MARK: Internal
 
-    public init(_ documentItems: Binding<PickedDocumentsItems>, didFinishPicking: ((Bool) -> Void)? = nil) {
-        self.documentItems = documentItems
-        self.didFinishPicking = didFinishPicking
-    }
+    let parent: SwiftUIDocumentPickerViewController
+  }
 
-    // MARK: - UIViewControllerRepresentable
+  // MARK: - UIViewControllerRepresentable
 
-    public func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let controller = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf], asCopy: false)
-        controller.allowsMultipleSelection = true
-        controller.directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        controller.delegate = context.coordinator
-        return controller
-    }
+  public func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+    let controller = UIDocumentPickerViewController(
+      forOpeningContentTypes: [.pdf],
+      asCopy: false
+    )
+    controller.allowsMultipleSelection = true
+    controller.directoryURL = FileManager.default.urls(
+      for: .documentDirectory,
+      in: .userDomainMask
+    )[0]
+    controller.delegate = context.coordinator
+    return controller
+  }
 
-    public func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {
-        uiViewController.allowsMultipleSelection = true
-    }
+  public func updateUIViewController(
+    _ uiViewController: UIDocumentPickerViewController,
+    context: Context
+  ) {
+    uiViewController.allowsMultipleSelection = true
+  }
 
-    public func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+  public func makeCoordinator() -> Coordinator {
+    Coordinator(self)
+  }
+
+  // MARK: Internal
+
+  var documentItems: Binding<PickedDocumentsItems>
+  var didFinishPicking: ((_ didSelectItems: Bool) -> ())?
 }
+
+// MARK: - DocumentPickerModel
 
 public struct DocumentPickerModel: Identifiable {
-    public enum DocumentType {
-        case pdf
-    }
+  // MARK: Lifecycle
 
-    public var id: String
-    public var url: URL?
-    public var documentType: DocumentType = .pdf
+  init(with documentURL: URL) {
+    self.id = UUID().uuidString
+    self.url = documentURL
+  }
 
-    init(with documentURL: URL) {
-        id = UUID().uuidString
-        url = documentURL
-    }
+  // MARK: Public
 
-    mutating func delete() {
-        switch documentType {
-        case .pdf:
-            guard let url = url else { return }
-            try? FileManager.default.removeItem(at: url)
-            self.url = nil
-        }
+  public enum DocumentType {
+    case pdf
+  }
+
+  public var id: String
+  public var url: URL?
+  public var documentType: DocumentType = .pdf
+
+  // MARK: Internal
+
+  mutating func delete() {
+    switch documentType {
+    case .pdf:
+      guard let url = url else { return }
+      try? FileManager.default.removeItem(at: url)
+      self.url = nil
     }
+  }
 }
 
+// MARK: - PickedDocumentsItems
+
 public class PickedDocumentsItems: ObservableObject {
-    @Published public var items = [DocumentPickerModel]()
+  // MARK: Lifecycle
 
-    public init() {}
+  public init() {}
 
-    func append(item: DocumentPickerModel) {
-        if !items.contains(where: { $0.url == item.url }) {
-            items.append(item)
-        }
+  // MARK: Public
+
+  @Published
+  public var items = [DocumentPickerModel]()
+
+  // MARK: Internal
+
+  func append(item: DocumentPickerModel) {
+    if !items.contains(where: { $0.url == item.url }) {
+      items.append(item)
+    }
+  }
+
+  func deleteAll() {
+    for index in items.indices {
+      items[index].delete()
     }
 
-    func deleteAll() {
-        for index in items.indices {
-            items[index].delete()
-        }
-
-        items.removeAll()
-    }
+    items.removeAll()
+  }
 }

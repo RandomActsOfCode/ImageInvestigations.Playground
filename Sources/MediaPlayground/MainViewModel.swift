@@ -4,48 +4,58 @@ import UIKit
 import ViewHelpers
 
 class MainViewModel: ObservableObject {
-    @Published var showImagePicker: Bool
-    @Published var showDocumentPicker: Bool
-    @Published var selectedMedia: PickedMediaItems
-    @Published var selectedDocuments: PickedDocumentsItems
+  // MARK: Lifecycle
 
-    init() {
-        self.showImagePicker = false
-        self.showDocumentPicker = false
-        self.selectedMedia = PickedMediaItems()
-        self.selectedDocuments = PickedDocumentsItems()
-        copyAssetsToDocuments()
-    }
+  init() {
+    self.showImagePicker = false
+    self.showDocumentPicker = false
+    self.selectedMedia = PickedMediaItems()
+    self.selectedDocuments = PickedDocumentsItems()
+    copyAssetsToDocuments()
+  }
 
-    var bundledResource: [URL] {
-        Resources.all
-    }
+  // MARK: Internal
 
-    var documentsUrl: URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
+  @Published
+  var showImagePicker: Bool
+  @Published
+  var showDocumentPicker: Bool
+  @Published
+  var selectedMedia: PickedMediaItems
+  @Published
+  var selectedDocuments: PickedDocumentsItems
 
-    func pickImages() {
-        showImagePicker = true
-    }
+  var bundledResource: [URL] {
+    Resources.all
+  }
 
-    func pickDocuments() {
-        showDocumentPicker = true
-    }
+  var documentsUrl: URL {
+    FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+  }
 
-    private func copyAssetsToDocuments() {
-        Resources.all.forEach {
-            let dest = documentsUrl.appendingPathComponent($0.lastPathComponent)
+  func pickImages() {
+    showImagePicker = true
+  }
 
-            do {
-                if FileManager.default.fileExists(atPath: dest.path) {
-                    try FileManager.default.removeItem(at: dest)
-                }
+  func pickDocuments() {
+    showDocumentPicker = true
+  }
 
-                try FileManager.default.copyItem(at: $0, to: dest)
-            } catch {
-                print("Error copy asset to Documents: \(error.localizedDescription)")
-            }
+  // MARK: Private
+
+  private func copyAssetsToDocuments() {
+    Resources.all.forEach {
+      let dest = documentsUrl.appendingPathComponent($0.lastPathComponent)
+
+      do {
+        if FileManager.default.fileExists(atPath: dest.path) {
+          try FileManager.default.removeItem(at: dest)
         }
+
+        try FileManager.default.copyItem(at: $0, to: dest)
+      } catch {
+        print("Error copy asset to Documents: \(error.localizedDescription)")
+      }
     }
+  }
 }

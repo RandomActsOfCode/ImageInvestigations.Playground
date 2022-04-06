@@ -4,65 +4,84 @@ import SwiftUI
 import UIKit
 
 public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
-    // MARK: - QLPreviewControllerDelegate
+  // MARK: Lifecycle
 
-    private class Delegate: NSObject, QLPreviewControllerDelegate {
-        func previewController(
-            _ controller: QLPreviewController,
-            editingModeFor previewItem: QLPreviewItem
-        ) -> QLPreviewItemEditingMode {
-            QLPreviewItemEditingMode.updateContents
-        }
+  // MARK: - init
+
+  public init(url: URL) {
+    self.url = url
+  }
+
+  // MARK: Public
+
+  // MARK: - Coordinator
+
+  public class Coordinator: QLPreviewControllerDataSource {
+    // MARK: Lifecycle
+
+    init(_ parent: SwiftUIQLPreviewController) {
+      self.parent = parent
     }
 
-    // MARK: - Coordinator
+    // MARK: Public
 
-    public class Coordinator: QLPreviewControllerDataSource {
-        let parent: SwiftUIQLPreviewController
-
-        init(_ parent: SwiftUIQLPreviewController) {
-            self.parent = parent
-        }
-
-        public func numberOfPreviewItems(
-            in controller: QLPreviewController
-        ) -> Int {
-            1
-        }
-
-        public func previewController(
-            _ controller: QLPreviewController, previewItemAt index: Int
-        ) -> QLPreviewItem {
-            // NSURL conforms to QLPreviewItem out of the box
-            return parent.url as NSURL
-        }
+    public func numberOfPreviewItems(
+      in controller: QLPreviewController
+    )
+      -> Int {
+      1
     }
 
-    // MARK: - Properties
-
-    private let delegate = Delegate()
-    public let url: URL
-
-    // MARK: - init
-
-    public init(url: URL) {
-        self.url = url
+    public func previewController(
+      _ controller: QLPreviewController, previewItemAt index: Int
+    )
+      -> QLPreviewItem {
+      // NSURL conforms to QLPreviewItem out of the box
+      parent.url as NSURL
     }
 
-    // MARK: - UIViewControllerRepresentable
+    // MARK: Internal
 
-    public func makeUIViewController(context: Context) -> UINavigationController {
-        let controller = QLPreviewController()
-        controller.dataSource = context.coordinator
-        controller.isEditing = true
-        controller.delegate = self.delegate
-        let navigationController = UINavigationController(rootViewController: controller)
-        return navigationController
+    let parent: SwiftUIQLPreviewController
+  }
+
+  public let url: URL
+
+  // MARK: - UIViewControllerRepresentable
+
+  public func makeUIViewController(context: Context) -> UINavigationController {
+    let controller = QLPreviewController()
+    controller.dataSource = context.coordinator
+    controller.isEditing = true
+    controller.delegate = delegate
+    let navigationController = UINavigationController(rootViewController: controller)
+    return navigationController
+  }
+
+  public func updateUIViewController(
+    _ uiViewController: UINavigationController,
+    context: Context
+  ) {}
+
+  public func makeCoordinator() -> Coordinator {
+    Coordinator(self)
+  }
+
+  // MARK: Private
+
+  // MARK: - QLPreviewControllerDelegate
+
+  private class Delegate: NSObject, QLPreviewControllerDelegate {
+    func previewController(
+      _ controller: QLPreviewController,
+      editingModeFor previewItem: QLPreviewItem
+    )
+      -> QLPreviewItemEditingMode {
+      QLPreviewItemEditingMode.updateContents
     }
+  }
 
-    public func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
+  // MARK: - Properties
 
-    public func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+  private let delegate = Delegate()
 }
