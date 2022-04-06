@@ -7,27 +7,27 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		28BC0DF127FDAE42002BE755 /* CodeChecks */ = {
+		28BC0DF127FDAE42002BE755 /* Code Checks */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 28BC0DF227FDAE42002BE755 /* Build configuration list for PBXAggregateTarget "CodeChecks" */;
+			buildConfigurationList = 28BC0DF227FDAE42002BE755 /* Build configuration list for PBXAggregateTarget "Code Checks" */;
 			buildPhases = (
 				28BC0DF527FDAE47002BE755 /* pre-commit */,
 			);
 			dependencies = (
 			);
-			name = CodeChecks;
+			name = "Code Checks";
 			productName = CodeChecks;
 		};
-		28C990C527FDC30700C235BB /* CodeChecks and Build */ = {
+		28C990C527FDC30700C235BB /* Code Checks and Build */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 28C990C827FDC30700C235BB /* Build configuration list for PBXAggregateTarget "CodeChecks and Build" */;
+			buildConfigurationList = 28C990C827FDC30700C235BB /* Build configuration list for PBXAggregateTarget "Code Checks and Build" */;
 			buildPhases = (
 			);
 			dependencies = (
-				28C990CC27FDC31D00C235BB /* PBXTargetDependency */,
 				28C990CA27FDC30E00C235BB /* PBXTargetDependency */,
+				28C990CC27FDC31D00C235BB /* PBXTargetDependency */,
 			);
-			name = "CodeChecks and Build";
+			name = "Code Checks and Build";
 			productName = "CodeChecks and Build";
 		};
 /* End PBXAggregateTarget section */
@@ -177,8 +177,8 @@
 			projectRoot = "";
 			targets = (
 				28CFE83E27F73EE400A3384E /* SampleApp */,
-				28BC0DF127FDAE42002BE755 /* CodeChecks */,
-				28C990C527FDC30700C235BB /* CodeChecks and Build */,
+				28BC0DF127FDAE42002BE755 /* Code Checks */,
+				28C990C527FDC30700C235BB /* Code Checks and Build */,
 			);
 		};
 /* End PBXProject section */
@@ -230,7 +230,7 @@
 /* Begin PBXTargetDependency section */
 		28C990CA27FDC30E00C235BB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 28BC0DF127FDAE42002BE755 /* CodeChecks */;
+			target = 28BC0DF127FDAE42002BE755 /* Code Checks */;
 			targetProxy = 28C990C927FDC30E00C235BB /* PBXContainerItemProxy */;
 		};
 		28C990CC27FDC31D00C235BB /* PBXTargetDependency */ = {
@@ -402,6 +402,7 @@
 				DEVELOPMENT_TEAM = K37L2NP69C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To take photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -431,6 +432,7 @@
 				DEVELOPMENT_TEAM = K37L2NP69C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To take photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -452,7 +454,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		28BC0DF227FDAE42002BE755 /* Build configuration list for PBXAggregateTarget "CodeChecks" */ = {
+		28BC0DF227FDAE42002BE755 /* Build configuration list for PBXAggregateTarget "Code Checks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				28BC0DF327FDAE42002BE755 /* Debug */,
@@ -461,7 +463,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		28C990C827FDC30700C235BB /* Build configuration list for PBXAggregateTarget "CodeChecks and Build" */ = {
+		28C990C827FDC30700C235BB /* Build configuration list for PBXAggregateTarget "Code Checks and Build" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				28C990C627FDC30700C235BB /* Debug */,
