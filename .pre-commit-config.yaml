@@ -24,3 +24,11 @@ repos:
     hooks:
     -   id: typos-src
         args: ["--format", "brief"]
+-   repo: local
+    hooks:
+    -   id: run-swiftpm-tests
+        name: Run all SwiftPM tests
+        language: script
+        entry: ./Tools/run-swiftpm-tests.py
+        files: ''
+        stages: [push]
