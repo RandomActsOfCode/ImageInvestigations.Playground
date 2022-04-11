@@ -7,6 +7,9 @@ attributes:
         - "@objc"
         - "@IBAction"
         - "@NSManaged"
+type_name:
+    excluded:
+        - "Id"
 identifier_name:
     excluded:
         - "i"
@@ -31,7 +34,6 @@ reporter: "xcode"
 opt_in_rules:
     - anyobject_protocol
     - array_init
-    - attributes
     - closure_end_indentation
     - closure_spacing
     - collection_alignment

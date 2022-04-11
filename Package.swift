@@ -20,6 +20,8 @@ let package = Package(
     ),
   ],
   dependencies: [
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "0.1.0"),
+    .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.7.0"),
   ],
   targets: [
     .target(
@@ -32,7 +34,10 @@ let package = Package(
     ),
     .target(
       name: "ViewHelpers",
-      dependencies: [],
+      dependencies: [
+        .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+        .product(name: "Tagged", package: "swift-tagged"),
+      ],
       path: "Sources/ViewHelpers"
     ),
     .target(

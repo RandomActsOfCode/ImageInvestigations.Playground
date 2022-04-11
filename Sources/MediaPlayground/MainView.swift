@@ -13,11 +13,11 @@ public struct MainView: View {
   public var body: some View {
     NavigationView {
       List {
-        NavigationLink(destination: photoPickerView) {
-          Text("Image Picker (External)")
+        NavigationLink(destination: devicePickerView) {
+          Text("Document Picker (Device)")
         }
-        NavigationLink(destination: documentPickerView) {
-          Text("Document Picker (External)")
+        NavigationLink(destination: appPickerView) {
+          Text("Camera Picker")
         }
       }
     }
@@ -28,12 +28,12 @@ public struct MainView: View {
   @ObservedObject
   private var viewModel = MainViewModel()
 
-  private var photoPickerView: some View {
-    ImagePickerView(viewModel)
+  private var devicePickerView: some View {
+    DevicePickerView(viewModel)
   }
 
-  private var documentPickerView: some View {
-    DocumentPickerView(viewModel)
+  private var appPickerView: some View {
+    CameraPickerView(viewModel)
   }
 }
 

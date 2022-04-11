@@ -3,13 +3,98 @@ import QuickLook
 import SwiftUI
 import UIKit
 
+// MARK: - ConfigurableQLPreviewController
+
+class ConfigurableQLPreviewController: QLPreviewController {
+  // MARK: Lifecycle
+
+  init(
+    showCloseButton: Bool,
+    closeButtonAction: (() -> ())?,
+    hideToolbar: Bool = false
+  ) {
+    self.showCloseButton = showCloseButton
+    self.closeButtonAction = closeButtonAction
+    self.hideToolbar = hideToolbar
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    self.showCloseButton = false
+    self.closeButtonAction = nil
+    self.hideToolbar = false
+    super.init(coder: aDecoder)
+  }
+
+  // MARK: Internal
+
+  var observations: [NSKeyValueObservation] = []
+  let showCloseButton: Bool
+  let closeButtonAction: (() -> ())?
+  let hideToolbar: Bool
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    if showCloseButton {
+      let closeButton = UIBarButtonItem(
+        barButtonSystemItem: .close,
+        target: self,
+        action: #selector(close)
+      )
+
+      navigationItem.leftBarButtonItem = closeButton
+    }
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    if hideToolbar {
+      navigationController?.toolbar.isHidden = true
+      configureToolbarHiding()
+    }
+  }
+
+  func configureToolbarHiding() {
+    if let navigationToolbar = navigationController?.toolbar {
+      let observation = navigationToolbar.observe(\.isHidden) { [weak self] _, _ in
+        if self?.navigationController?.toolbar.isHidden == false {
+          self?.navigationController?.toolbar.isHidden = true
+        }
+      }
+      observations.append(observation)
+    }
+  }
+
+  @objc
+  func close() {
+    if let action = closeButtonAction {
+      action()
+    }
+
+    dismiss(animated: true)
+  }
+}
+
+// MARK: - SwiftUIQLPreviewController
+
 public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
   // MARK: Lifecycle
 
   // MARK: - init
 
-  public init(url: URL) {
+  public init(
+    url: URL,
+    showCloseButton: Bool = false,
+    closeButtonAction: (() -> ())? = nil,
+    hideToolbar: Bool = false
+  ) {
     self.url = url
+    self.showCloseButton = showCloseButton
+    self.closeButtonAction = closeButtonAction
+    self.hideToolbar = hideToolbar
+    self.delegate = Delegate()
   }
 
   // MARK: Public
@@ -50,7 +135,11 @@ public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
   // MARK: - UIViewControllerRepresentable
 
   public func makeUIViewController(context: Context) -> UINavigationController {
-    let controller = QLPreviewController()
+    let controller = ConfigurableQLPreviewController(
+      showCloseButton: showCloseButton,
+      closeButtonAction: closeButtonAction,
+      hideToolbar: hideToolbar
+    )
     controller.dataSource = context.coordinator
     controller.isEditing = true
     controller.delegate = delegate
@@ -83,5 +172,8 @@ public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
 
   // MARK: - Properties
 
-  private let delegate = Delegate()
+  private let delegate: Delegate
+  private let showCloseButton: Bool
+  private let closeButtonAction: (() -> ())?
+  private let hideToolbar: Bool
 }

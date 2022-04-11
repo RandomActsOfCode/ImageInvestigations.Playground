@@ -1,7 +1,18 @@
+import Combine
 import Foundation
 import MediaAssets
 import UIKit
 import ViewHelpers
+
+// MARK: - QuickLookConfiguration
+
+struct QuickLookConfiguration {
+  var showCloseButton = false
+  var closeButtonAction: (() -> ())?
+  var hideToolbar = false
+}
+
+// MARK: - MainViewModel
 
 class MainViewModel: ObservableObject {
   // MARK: Lifecycle
@@ -9,8 +20,10 @@ class MainViewModel: ObservableObject {
   init() {
     self.showImagePicker = false
     self.showDocumentPicker = false
-    self.selectedMedia = PickedMediaItems()
-    self.selectedDocuments = PickedDocumentsItems()
+    self.showCameraPicker = false
+    self.showQuickLook = false
+    self.pickedItems = PickedItems()
+    self.quickLookConfiguration = QuickLookConfiguration()
     copyAssetsToDocuments()
   }
 
@@ -18,12 +31,23 @@ class MainViewModel: ObservableObject {
 
   @Published
   var showImagePicker: Bool
+
   @Published
   var showDocumentPicker: Bool
+
   @Published
-  var selectedMedia: PickedMediaItems
+  var showCameraPicker: Bool
+
   @Published
-  var selectedDocuments: PickedDocumentsItems
+  var showQuickLook: Bool
+
+  @Published
+  var pickedItems: PickedItems
+
+  @Published
+  var quickLookConfiguration: QuickLookConfiguration
+
+  var itemToEdit: URL?
 
   var bundledResource: [URL] {
     Resources.all
@@ -39,6 +63,15 @@ class MainViewModel: ObservableObject {
 
   func pickDocuments() {
     showDocumentPicker = true
+  }
+
+  func openCamera() {
+    showCameraPicker = true
+  }
+
+  func editItem(url: URL) {
+    itemToEdit = url
+    showQuickLook = true
   }
 
   // MARK: Private
