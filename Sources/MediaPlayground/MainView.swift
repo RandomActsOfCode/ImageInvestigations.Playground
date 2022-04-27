@@ -16,6 +16,9 @@ public struct MainView: View {
         NavigationLink(destination: devicePickerView) {
           Text("Document Picker (Device)")
         }
+        NavigationLink(destination: quickLookPreviewView) {
+          Text("Quicklook Document Previews")
+        }
         NavigationLink(destination: appPickerView) {
           Text("Camera Picker")
         }
@@ -34,6 +37,10 @@ public struct MainView: View {
 
   private var appPickerView: some View {
     CameraPickerView(viewModel)
+  }
+
+  private var quickLookPreviewView: some View {
+    QuickLookPreviewView(viewModel)
   }
 }
 

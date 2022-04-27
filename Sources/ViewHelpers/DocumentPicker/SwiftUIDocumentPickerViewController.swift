@@ -24,7 +24,7 @@ public struct SwiftUIDocumentPickerViewController: UIViewControllerRepresentable
 
   public func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
     let controller = UIDocumentPickerViewController(
-      forOpeningContentTypes: [.pdf],
+      forOpeningContentTypes: [.data], // allows for any file type
       asCopy: false
     )
     controller.allowsMultipleSelection = true

@@ -1,8 +1,18 @@
 import Combine
 import Foundation
+import IdentifiedCollections
 import MediaAssets
+import QuickLookThumbnailing
 import UIKit
 import ViewHelpers
+
+// MARK: - Thumbnail
+
+struct Thumbnail: Identifiable {
+  var id: UUID
+  var image: UIImage
+  var url: URL
+}
 
 // MARK: - QuickLookConfiguration
 
@@ -23,11 +33,18 @@ class MainViewModel: ObservableObject {
     self.showCameraPicker = false
     self.showQuickLook = false
     self.pickedItems = PickedItems()
+    self.thumbnails = []
     self.quickLookConfiguration = QuickLookConfiguration()
+    pickedItems.$items.sink {
+      self.thumbnails = []
+      $0.forEach { item in self.generateThumbnailRepresentations(url: item.url) }
+    }.store(in: &cancellables)
     copyAssetsToDocuments()
   }
 
   // MARK: Internal
+
+  var cancellables: [AnyCancellable] = []
 
   @Published
   var showImagePicker: Bool
@@ -43,6 +60,9 @@ class MainViewModel: ObservableObject {
 
   @Published
   var pickedItems: PickedItems
+
+  @Published
+  var thumbnails: [Thumbnail]
 
   @Published
   var quickLookConfiguration: QuickLookConfiguration
@@ -75,6 +95,30 @@ class MainViewModel: ObservableObject {
   }
 
   // MARK: Private
+
+  private func generateThumbnailRepresentations(url: URL) {
+    let size = CGSize(width: 120, height: 180)
+    let scale = UIScreen.main.scale
+
+    let request = QLThumbnailGenerator.Request(
+      fileAt: url,
+      size: size,
+      scale: scale,
+      representationTypes: .all
+    )
+
+    let generator = QLThumbnailGenerator.shared
+    generator.generateRepresentations(for: request) { thumbnail, _, _ in
+      DispatchQueue.main.async {
+        if let thumbnail = thumbnail {
+          if let index = self.thumbnails.firstIndex(where: { $0.url == url }) {
+            self.thumbnails.remove(at: index)
+          }
+          self.thumbnails.append(.init(id: UUID(), image: thumbnail.uiImage, url: url))
+        }
+      }
+    }
+  }
 
   private func copyAssetsToDocuments() {
     Resources.all.forEach {
