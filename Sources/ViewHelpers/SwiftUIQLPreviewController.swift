@@ -32,7 +32,7 @@ class ConfigurableQLPreviewController: QLPreviewController {
   let showCloseButton: Bool
   let closeButtonAction: (() -> ())?
   let hideToolbar: Bool
-  var wasClosed: Bool = false
+  var wasClosed = false
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -70,15 +70,13 @@ class ConfigurableQLPreviewController: QLPreviewController {
 
   @objc
   func close() {
-      wasClosed = true
+    wasClosed = true
     if let action = closeButtonAction {
       action()
     }
 
     dismiss(animated: true)
   }
-
-
 }
 
 // MARK: - SwiftUIQLPreviewController
@@ -176,13 +174,17 @@ public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
       _ controller: QLPreviewController,
       editingModeFor previewItem: QLPreviewItem
     )
-    -> QLPreviewItemEditingMode {
+      -> QLPreviewItemEditingMode {
       QLPreviewItemEditingMode.createCopy
     }
 
-    func previewController(_ controller: QLPreviewController, didSaveEditedCopyOf previewItem: QLPreviewItem, at modifiedContentsURL: URL) {
+    func previewController(
+      _ controller: QLPreviewController,
+      didSaveEditedCopyOf previewItem: QLPreviewItem,
+      at modifiedContentsURL: URL
+    ) {
       callback?(self.controller.wasClosed, modifiedContentsURL)
-      }
+    }
   }
 
   // MARK: - Properties

@@ -20,10 +20,10 @@ struct DevicePickerView: View {
   var items: PickedItems
 
   @State
-  var showAlert: Bool = false
+  var showAlert = false
 
   @State
-  var modifiedContentsURL: URL? = nil
+  var modifiedContentsURL: URL?
 
   var body: some View {
     VStack {
@@ -62,7 +62,8 @@ struct DevicePickerView: View {
       VStack {
         Text("Unsaved Changes")
           .font(.largeTitle)
-        if let new = modifiedContentsURL, let data = try? Data(contentsOf: new), let uiImage = UIImage(data: data) {
+        if let new = modifiedContentsURL, let data = try? Data(contentsOf: new),
+           let uiImage = UIImage(data: data) {
           Image(uiImage: uiImage)
             .resizable()
             .scaledToFit()
