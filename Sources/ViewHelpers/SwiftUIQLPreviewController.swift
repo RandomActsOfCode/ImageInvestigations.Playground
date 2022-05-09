@@ -32,6 +32,7 @@ class ConfigurableQLPreviewController: QLPreviewController {
   let showCloseButton: Bool
   let closeButtonAction: (() -> ())?
   let hideToolbar: Bool
+  var wasClosed: Bool = false
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -69,12 +70,15 @@ class ConfigurableQLPreviewController: QLPreviewController {
 
   @objc
   func close() {
+      wasClosed = true
     if let action = closeButtonAction {
       action()
     }
 
     dismiss(animated: true)
   }
+
+
 }
 
 // MARK: - SwiftUIQLPreviewController
@@ -88,12 +92,14 @@ public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
     url: URL,
     showCloseButton: Bool = false,
     closeButtonAction: (() -> ())? = nil,
-    hideToolbar: Bool = false
+    hideToolbar: Bool = false,
+    markUpUpdateAction: ((Bool, URL) -> ())? = nil
   ) {
     self.url = url
     self.showCloseButton = showCloseButton
     self.closeButtonAction = closeButtonAction
     self.hideToolbar = hideToolbar
+    self.markUpUpdateAction = markUpUpdateAction
     self.delegate = Delegate()
   }
 
@@ -142,6 +148,8 @@ public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
     )
     controller.dataSource = context.coordinator
     controller.isEditing = true
+    delegate.controller = controller
+    delegate.callback = markUpUpdateAction
     controller.delegate = delegate
     let navigationController = UINavigationController(rootViewController: controller)
     return navigationController
@@ -161,19 +169,27 @@ public struct SwiftUIQLPreviewController: UIViewControllerRepresentable {
   // MARK: - QLPreviewControllerDelegate
 
   private class Delegate: NSObject, QLPreviewControllerDelegate {
+    var controller: ConfigurableQLPreviewController!
+    var callback: ((Bool, URL) -> ())?
+
     func previewController(
       _ controller: QLPreviewController,
       editingModeFor previewItem: QLPreviewItem
     )
-      -> QLPreviewItemEditingMode {
-      QLPreviewItemEditingMode.updateContents
+    -> QLPreviewItemEditingMode {
+      QLPreviewItemEditingMode.createCopy
     }
+
+    func previewController(_ controller: QLPreviewController, didSaveEditedCopyOf previewItem: QLPreviewItem, at modifiedContentsURL: URL) {
+      callback?(self.controller.wasClosed, modifiedContentsURL)
+      }
   }
 
   // MARK: - Properties
 
-  private let delegate: Delegate
+  private var delegate: Delegate!
   private let showCloseButton: Bool
   private let closeButtonAction: (() -> ())?
   private let hideToolbar: Bool
+  private let markUpUpdateAction: ((Bool, URL) -> ())?
 }

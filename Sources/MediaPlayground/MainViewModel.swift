@@ -35,6 +35,7 @@ class MainViewModel: ObservableObject {
     self.pickedItems = PickedItems()
     self.thumbnails = []
     self.quickLookConfiguration = QuickLookConfiguration()
+    self.hack = false
     pickedItems.$items.sink {
       self.thumbnails = []
       $0.forEach { item in self.generateThumbnailRepresentations(url: item.url) }
@@ -45,6 +46,9 @@ class MainViewModel: ObservableObject {
   // MARK: Internal
 
   var cancellables: [AnyCancellable] = []
+
+  @Published
+  var hack: Bool
 
   @Published
   var showImagePicker: Bool

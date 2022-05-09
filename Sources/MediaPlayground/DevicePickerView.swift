@@ -19,6 +19,12 @@ struct DevicePickerView: View {
   @ObservedObject
   var items: PickedItems
 
+  @State
+  var showAlert: Bool = false
+
+  @State
+  var modifiedContentsURL: URL? = nil
+
   var body: some View {
     VStack {
       headerView
@@ -34,14 +40,44 @@ struct DevicePickerView: View {
     .sheet(isPresented: $viewModel.showImagePicker) {
       SwiftUIPHPickerViewController($viewModel.pickedItems)
     }
-    .sheet(isPresented: $viewModel.showQuickLook) {
+    .fullScreenCover(isPresented: $viewModel.showQuickLook) {
       if let url = viewModel.itemToEdit {
         SwiftUIQLPreviewController(
           url: url,
           showCloseButton: viewModel.quickLookConfiguration.showCloseButton,
           closeButtonAction: { print("Closed was called!") },
-          hideToolbar: viewModel.quickLookConfiguration.hideToolbar
+          hideToolbar: viewModel.quickLookConfiguration.hideToolbar,
+          markUpUpdateAction: { wasClosed, modifiedContentsURL in
+            if !wasClosed {
+              _ = try! FileManager.default.replaceItemAt(url, withItemAt: modifiedContentsURL)
+            } else {
+              self.modifiedContentsURL = modifiedContentsURL
+              self.showAlert = true
+            }
+          }
         )
+      }
+    }
+    .popover(isPresented: $showAlert) {
+      VStack {
+        Text("Unsaved Changes")
+          .font(.largeTitle)
+        if let new = modifiedContentsURL, let data = try? Data(contentsOf: new), let uiImage = UIImage(data: data) {
+          Image(uiImage: uiImage)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 250, height: 350)
+        }
+        HStack {
+          Button("Discard", role: .destructive) { showAlert = false }
+          Button("Save", role: .cancel) {
+            if let url = viewModel.itemToEdit, let new = modifiedContentsURL {
+              _ = try! FileManager.default.replaceItemAt(url, withItemAt: new)
+            }
+            showAlert = false
+            viewModel.hack.toggle()
+          }
+        }
       }
     }
   }

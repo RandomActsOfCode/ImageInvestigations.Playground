@@ -20,7 +20,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "0.1.0"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "0.3.2"),
     .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.7.0"),
   ],
   targets: [
